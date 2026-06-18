@@ -500,18 +500,17 @@ input[type="file"]::file-selector-button:hover {
 
 .custom-file-upload {
     display: flex;
+    flex-direction: column; /* Coloca ícones em cima e texto embaixo para caber melhor */
     align-items: center;
     justify-content: center;
-    gap: 10px;
-    padding: 15px;
+    gap: 8px;
+    padding: 20px;
     background: #1a3a24;
     border: 2px dashed var(--amarelo-cbf);
-    border-radius: 8px;
+    border-radius: 10px;
     color: #fff;
     cursor: pointer;
-    font-weight: bold;
     transition: all 0.3s ease;
-    text-align: center;
 }
 
 .custom-file-upload:hover {
@@ -531,12 +530,11 @@ input[type="file"] {
 }
 
 #file-name-display {
-    font-size: 14px;
-    max-width: 200px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
+
 
 .prize-amount {
     font-size: 32px;
@@ -608,4 +606,12 @@ input[type="file"] {
 
 #nome::placeholder {
     text-transform: uppercase;
+}
+
+.upload-icons {
+    font-size: 22px;
+    color: var(--amarelo-cbf);
+    display: flex;
+    gap: 8px;
+    align-items: center;
 }

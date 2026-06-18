@@ -92,13 +92,16 @@
                     </div>
                 </div>
                 <div class="input-group">
-    <label>2. Anexe o Comprovante (Obrigatório)</label>
+    <label>2. Envie o Comprovante (Obrigatório)</label>
     <div class="upload-container">
         <label for="comprovante" class="custom-file-upload">
-            <span class="camera-icon"><i class="bi bi-camera-fill"></i></span>
-            <span id="file-name-display">Tirar Foto ou Anexar</span>
+            <span class="upload-icons">
+                <i class="bi bi-camera-fill"></i> / <i class="bi bi-file-earmark-arrow-up-fill"></i>
+            </span> 
+            <span id="file-name-display">Tirar Foto ou Escolher Arquivo</span>
         </label>
-        <input type="file" id="comprovante" accept="image/*,application/pdf" capture="environment" required onchange="atualizarNomeArquivo(this)">
+        <!-- Removi o 'capture="environment"' para que o celular abra o menu de ESCOLHA em vez de ir direto para a câmera -->
+        <input type="file" id="comprovante" accept="image/*,application/pdf" required onchange="atualizarNomeArquivo(this)">
     </div>
 </div>
                 <button type="submit" class="btn-submit" id="btnSubmitPagamento">CONCLUIR PALPITES</button>
