@@ -1,0 +1,611 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,700;0,900;1,900&display=swap');
+
+:root {
+    --verde-cbf: #009c3b;
+    --verde-neon: #00ff5e;
+    --amarelo-cbf: #ffdf00;
+    --azul-cbf: #002776;
+    --fundo-escuro: #011a0d; /* Um verde quase preto, super elegante */
+    --borda-brilho: rgba(255, 223, 0, 0.4);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Montserrat', sans-serif; /* Fonte mais geométrica e esportiva */
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    background-color: var(--fundo-escuro);
+    /* Padrão de gramado sutil / linhas diagonais dinâmicas */
+    background-image: repeating-linear-gradient(
+        45deg,
+        rgba(0, 156, 59, 0.03) 0px,
+        rgba(0, 156, 59, 0.03) 2px,
+        transparent 2px,
+        transparent 8px
+    );
+    color: #fff;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    overflow-x: hidden;
+}
+
+/* Bolhas de luz no fundo para movimento */
+.bg-glow {
+    position: fixed;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, var(--verde-cbf) 0%, transparent 70%);
+    opacity: 0.15;
+    top: -100px;
+    left: -100px;
+    z-index: -1;
+    animation: pulsarLuz 8s infinite alternate;
+}
+
+.bg-glow.secondary {
+    background: radial-gradient(circle, var(--azul-cbf) 0%, transparent 70%);
+    top: auto;
+    bottom: -150px;
+    left: auto;
+    right: -100px;
+    animation-delay: -4s;
+}
+
+@keyframes pulsarLuz {
+    0% { transform: scale(1) translate(0, 0); opacity: 0.1; }
+    100% { transform: scale(1.3) translate(50px, 50px); opacity: 0.25; }
+}
+
+/* O Cartão Principal - Estilo Painel Metálico/Vidro */
+.container {
+    background: linear-gradient(180deg, #022b15 0%, #01140a 100%);
+    border: 2px solid rgba(0, 255, 94, 0.1);
+    border-top: 4px solid var(--amarelo-cbf); /* Faixa amarela de destaque no topo */
+    border-radius: 20px;
+    padding: 35px 25px;
+    width: 100%;
+    max-width: 460px;
+    box-shadow: 
+        0 30px 60px rgba(0,0,0,0.8),
+        inset 0 1px 0 rgba(255,255,255,0.1);
+    position: relative;
+}
+
+/* Detalhe de furos de painel (Grafismo esportivo) */
+.container::before {
+    content: '';
+    position: absolute;
+    top: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40px;
+    height: 6px;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.8), 0 1px 0 rgba(255,255,255,0.1);
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 30px;
+    margin-top: 10px;
+}
+
+.header h1 {
+    font-size: 32px;
+    font-weight: 900;
+    font-style: italic;
+    color: #fff;
+    text-transform: uppercase;
+    text-shadow: 3px 3px 0 var(--azul-cbf), -1px -1px 0 var(--verde-cbf);
+    letter-spacing: -1px;
+}
+
+/* Abas estilo Switch Mobile */
+.tabs {
+    display: flex;
+    background: rgba(0, 0, 0, 0.6);
+    padding: 6px;
+    border-radius: 50px;
+    margin-bottom: 25px;
+    box-shadow: inset 0 2px 5px rgba(0,0,0,0.5);
+    position: relative;
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 12px;
+    background: transparent;
+    border: none;
+    color: #8fa398;
+    font-weight: 700;
+    font-size: 14px;
+    border-radius: 40px;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    z-index: 2;
+}
+
+.tab-btn.active {
+    background: linear-gradient(180deg, var(--amarelo-cbf) 0%, #e6c800 100%);
+    color: var(--azul-cbf);
+    text-shadow: 0 1px 0 rgba(255,255,255,0.4);
+    box-shadow: 0 4px 10px rgba(255, 223, 0, 0.4);
+    transform: scale(1.05); /* Salta um pouco pra frente */
+}
+
+.aba-conteudo { display: none; }
+.aba-conteudo.active { 
+    display: block; 
+    animation: entrarPainel 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; 
+}
+
+@keyframes entrarPainel {
+    from { opacity: 0; transform: translateY(20px) scale(0.95); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Prêmio Acumulado - Estilo Painel de LED */
+.prize-pool {
+    text-align: center;
+    background: #000;
+    border: 2px solid var(--verde-cbf);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 25px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 0 15px rgba(0, 156, 59, 0.3), inset 0 0 20px rgba(0, 255, 94, 0.1);
+}
+
+/* Reflexo no vidro do LED */
+.prize-pool::after {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 50%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+    transform: skewX(-25deg);
+    animation: brilhoPassando 6s infinite;
+}
+
+@keyframes brilhoPassando {
+    0% { left: -100%; }
+    20%, 100% { left: 200%; }
+}
+
+.prize-pool p {
+    font-size: 13px;
+    color: var(--verde-neon);
+    font-weight: 700;
+    letter-spacing: 2px;
+    margin-bottom: 5px;
+}
+
+.prize-amount {
+    font-size: 38px;
+    font-weight: 900;
+    color: #fff;
+    text-shadow: 0 0 10px var(--verde-neon), 0 0 20px var(--verde-cbf);
+}
+
+/* Campos de Input Modernos */
+.input-group { margin-bottom: 20px; position: relative; }
+
+label {
+    display: block;
+    font-size: 12px;
+    color: #a3b8ad;
+    margin-bottom: 6px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+select, input[type="text"] {
+    width: 100%;
+    padding: 16px;
+    background: rgba(0, 0, 0, 0.4);
+    border: 2px solid rgba(255,255,255,0.05);
+    border-radius: 12px;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 600;
+    outline: none;
+    transition: all 0.3s ease;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
+}
+
+/* Efeito ao clicar no input (Borda cresce desenhando) */
+select:focus, input[type="text"]:focus {
+    border-color: var(--amarelo-cbf);
+    background: rgba(0, 0, 0, 0.6);
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.5), 0 0 15px rgba(255, 223, 0, 0.2);
+    transform: translateY(-2px);
+}
+
+select option { background: var(--fundo-escuro); color: #fff; }
+
+/* Arena do Confronto (Placar) */
+.match-area {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 20px;
+    padding: 20px 15px;
+    margin-bottom: 25px;
+    border-bottom: 3px solid rgba(255,255,255,0.05);
+}
+
+.team { display: flex; flex-direction: column; align-items: center; width: 32%; }
+
+.team img {
+    width: 68px;
+    height: 68px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--fundo-escuro);
+    box-shadow: 0 0 0 2px var(--amarelo-cbf), 0 8px 15px rgba(0,0,0,0.6);
+    margin-bottom: 12px;
+    transition: transform 0.3s;
+}
+
+.team img:hover {
+    transform: scale(1.1) rotate(5deg);
+}
+
+.team span { 
+    font-size: 15px; 
+    font-weight: 800; 
+    text-transform: uppercase; 
+    text-align: center; 
+}
+
+/* Inputs de Gols - Estilo Placar Eletrônico */
+.score-input {
+    width: 55px !important;
+    height: 65px;
+    text-align: center;
+    font-size: 32px !important;
+    font-weight: 900 !important;
+    font-family: monospace; /* Fonte digital */
+    border-radius: 8px;
+    background: #000 !important;
+    border: 2px solid #2a3b32 !important;
+    color: var(--amarelo-cbf) !important;
+    padding: 0 !important;
+    box-shadow: inset 0 5px 10px rgba(0,0,0,0.8) !important;
+    transition: all 0.2s;
+}
+
+.score-input:focus {
+    border-color: var(--verde-neon) !important;
+    color: var(--verde-neon) !important;
+    transform: scale(1.1);
+}
+
+/* O "X" pulsante */
+.versus { 
+    font-size: 22px; 
+    font-weight: 900; 
+    color: rgba(255,255,255,0.3);
+    animation: pulsarX 2s infinite;
+}
+
+@keyframes pulsarX {
+    0%, 100% { transform: scale(1); opacity: 0.5; }
+    50% { transform: scale(1.2); opacity: 1; color: var(--amarelo-cbf); }
+}
+
+/* BOTÃO TÁTIL 3D (O Segredo do Físico) */
+.btn-submit {
+    width: 100%;
+    padding: 18px;
+    background: linear-gradient(180deg, var(--amarelo-cbf) 0%, #d4b800 100%);
+    border: none;
+    border-radius: 16px;
+    color: var(--azul-cbf);
+    font-size: 18px;
+    font-weight: 900;
+    text-transform: uppercase;
+    cursor: pointer;
+    position: relative;
+    outline: none;
+    /* Sombras que criam a altura 3D do botão */
+    box-shadow: 
+        0 8px 0 #b39b00, 
+        0 15px 20px rgba(0,0,0,0.4),
+        inset 0 2px 0 rgba(255,255,255,0.4);
+    transition: all 0.1s;
+    letter-spacing: 1px;
+}
+
+/* Efeito de Clique Real (O botão afunda) */
+.btn-submit:active {
+    transform: translateY(8px); /* Desce exatamente o tamanho da sombra */
+    box-shadow: 
+        0 0 0 #b39b00, 
+        0 5px 10px rgba(0,0,0,0.4),
+        inset 0 2px 5px rgba(0,0,0,0.2);
+    background: linear-gradient(180deg, #e6c800 0%, #cca300 100%);
+}
+
+.btn-submit:hover:not(:active) {
+    filter: brightness(1.1);
+}
+
+/* Área do PIX e QR Code */
+.pix-code {
+    background: #000;
+    padding: 18px;
+    border-radius: 12px;
+    font-family: monospace;
+    word-break: break-all;
+    margin: 20px 0;
+    border: 2px dashed var(--verde-neon);
+    color: var(--verde-neon);
+    font-size: 14px;
+    box-shadow: inset 0 0 10px rgba(0, 255, 94, 0.1);
+}
+
+#pixQrCode {
+    border: 8px solid #fff;
+    border-radius: 12px;
+    transition: transform 0.3s;
+}
+
+#pixQrCode:hover {
+    transform: scale(1.05);
+}
+
+/* Cards de Ganhadores - Estilo Troféu */
+.winner-card {
+    background: linear-gradient(90deg, rgba(255,223,0,0.1) 0%, rgba(0,0,0,0.4) 100%);
+    border-left: 5px solid var(--amarelo-cbf);
+    padding: 18px;
+    border-radius: 12px;
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid rgba(255, 223, 0, 0.2);
+    border-bottom: 1px solid rgba(0,0,0,0.8);
+    transition: transform 0.2s;
+}
+
+.winner-card:hover {
+    transform: translateX(10px);
+    background: linear-gradient(90deg, rgba(255,223,0,0.2) 0%, rgba(0,0,0,0.5) 100%);
+}
+
+.winner-name { font-weight: 800; color: #fff; font-size: 16px; }
+.winner-prize { color: var(--amarelo-cbf); font-weight: 900; font-size: 18px; text-shadow: 0 2px 5px rgba(0,0,0,0.5); }
+.no-results { text-align: center; color: #7a8f82; padding: 30px; font-weight: 600; font-size: 15px; text-transform: uppercase; }
+
+/* Caixa Estática do PIX */
+.pix-static-box {
+    background: rgba(0, 156, 59, 0.1);
+    border: 2px dashed var(--verde-cbf);
+    padding: 15px;
+    border-radius: 12px;
+    text-align: center;
+    margin-bottom: 20px;
+    box-shadow: inset 0 0 10px rgba(0, 255, 94, 0.05);
+}
+.pix-static-box p { color: #fff; font-size: 13px; font-weight: 600; margin-bottom: 5px; }
+.pix-static-box .chave-pix { 
+    font-size: 20px; 
+    font-weight: 900; 
+    color: var(--amarelo-cbf); 
+    user-select: all; /* Facilita a cópia no celular */
+    letter-spacing: 1px;
+}
+
+/* Estilo do botão de Arquivo (Comprovante) */
+input[type="file"] {
+    width: 100%;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.4);
+    border: 2px solid rgba(255,255,255,0.05);
+    border-radius: 12px;
+    color: #a3b8ad;
+    font-size: 14px;
+    cursor: pointer;
+}
+input[type="file"]::file-selector-button {
+    background: var(--amarelo-cbf);
+    border: none;
+    padding: 10px 15px;
+    border-radius: 8px;
+    color: var(--azul-cbf);
+    font-weight: 900;
+    cursor: pointer;
+    margin-right: 15px;
+    transition: 0.2s;
+    text-transform: uppercase;
+    font-size: 12px;
+}
+input[type="file"]::file-selector-button:hover {
+    background: #e6c800;
+    transform: scale(1.05);
+}
+
+/* --- ESTILOS DO CARRINHO --- */
+.cart-item {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-left: 4px solid var(--verde-neon);
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+    font-weight: bold;
+}
+.cart-item-times { display: flex; align-items: center; gap: 8px; }
+.cart-item-times img { width: 20px; height: 20px; border-radius: 50%; }
+.cart-item-placar { background: #000; padding: 4px 10px; border-radius: 6px; color: var(--amarelo-cbf); }
+.cart-btn-remover { background: #ff3366; color: white; border: none; padding: 5px 10px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+.cart-total { font-size: 22px; font-weight: 900; color: var(--verde-neon); text-align: center; margin: 15px 0; }
+
+.pix-copy-box {
+    background: #000;
+    padding: 10px 15px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid var(--verde-cbf);
+    margin-bottom: 20px;
+    width: 100%; /* Garante que ocupe a largura total */
+    overflow: hidden; /* Evita que qualquer coisa saia do retângulo */
+}
+
+#chavePixText {
+    color: var(--amarelo-cbf);
+    font-weight: 900;
+    font-size: 15px; /* Reduzi levemente para garantir que caiba */
+    white-space: nowrap; /* FORÇA O TEXTO A FICAR EM UMA LINHA SÓ */
+    overflow: hidden;
+    text-overflow: ellipsis; /* Se for muito grande, põe "..." no final em vez de quebrar */
+    margin-right: 10px;
+}
+
+.btn-copy {
+    flex-shrink: 0; /* Impede o botão de espremer o texto */
+    background: var(--verde-cbf);
+    color: #fff;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 6px;
+    font-weight: 900;
+    font-size: 11px;
+    cursor: pointer;
+}
+.btn-copy:active { transform: scale(0.95); }
+
+.upload-container {
+    width: 100%;
+    margin-top: 5px;
+}
+
+.custom-file-upload {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 15px;
+    background: #1a3a24;
+    border: 2px dashed var(--amarelo-cbf);
+    border-radius: 8px;
+    color: #fff;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    text-align: center;
+}
+
+.custom-file-upload:hover {
+    background: #254d31;
+    border-color: var(--verde-neon);
+}
+
+.camera-icon {
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+}
+
+/* Esconde o input original feio do navegador */
+input[type="file"] {
+    display: none;
+}
+
+#file-name-display {
+    font-size: 14px;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.prize-amount {
+    font-size: 32px;
+    font-weight: 900;
+    color: #ffffff;
+    text-shadow: 0 0 10px rgba(255, 221, 0, 0.5);
+    animation: pulse-glow 2s infinite;
+    display: inline-block;
+}
+
+@keyframes pulse-glow {
+    0% {
+        transform: scale(1);
+        text-shadow: 0 0 10px rgba(30, 255, 0, 0.5);
+    }
+    50% {
+        transform: scale(1.05);
+        text-shadow: 0 0 25px rgba(9, 255, 0, 0.8), 0 0 40px rgba(255, 221, 0, 0.4);
+    }
+    100% {
+        transform: scale(1);
+        text-shadow: 0 0 10px rgba(0, 255, 13, 0.5);
+    }
+}
+
+.match-card-wrapper {
+    position: relative;
+    padding: 3px; /* Espessura da borda de luz */
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 15px;
+    overflow: hidden; /* Garante que as luzes fiquem presas ao redor do card */
+    margin-bottom: 20px;
+}
+
+/* A "Luz" que gira */
+.match-card-wrapper::before {
+    content: '';
+    position: absolute;
+    width: 150%;
+    height: 150%;
+    background: conic-gradient(
+        transparent, 
+        var(--amarelo-cbf), 
+        var(--verde-neon), 
+        transparent 30%
+    );
+    top: -25%;
+    left: -25%;
+    animation: rotate-border 2s linear infinite;
+}
+
+/* O fundo do card (para cobrir o centro do gradiente e deixar só a borda) */
+.match-area {
+    position: relative;
+    z-index: 1; /* Fica acima da luz */
+    background: #0a1f11 !important; /* Cor sólida do fundo */
+    border-radius: 12px;
+    margin-bottom: 0 !important; /* Remove margem antiga pois o wrapper já tem */
+}
+
+@keyframes rotate-border {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+#nome::placeholder {
+    text-transform: uppercase;
+}
