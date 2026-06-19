@@ -5,13 +5,20 @@ let bancoPalpites = [];
 let carrinho = [];
 const VALOR_APOSTA = 2.00;
 
+// Na função mudarAba, adicione o gatilho para carregar as estatísticas:
 function mudarAba(abaId) {
     document.querySelectorAll('.aba-conteudo, .tab-btn').forEach(el => el.classList.remove('active'));
     document.getElementById(`aba-${abaId}`).classList.add('active');
-    if (event && event.target) event.target.classList.add('active');
-    if (abaId === 'ganhadores') carregarResultados();
-}
+    
+    // Adiciona classe active no botão clicado
+    const botoes = document.querySelectorAll('.tab-btn');
+    botoes.forEach(btn => {
+        if(btn.innerText.toLowerCase().includes(abaId.substring(0,3))) btn.classList.add('active');
+    });
 
+    if (abaId === 'ganhadores') carregarResultados();
+    if (abaId === 'estatisticas') calcularEstatisticas();
+}
 function formatarDataCurta(dataStr) {
     if (!dataStr) return "Data não informada";
     const dataObj = new Date(dataStr);
@@ -144,6 +151,7 @@ document.getElementById('palpiteForm').addEventListener('submit', function(e) {
     document.getElementById('palpiteB').value = "0";
     
     renderizarCarrinho();
+    mostrarTendencias();
     // O alerta de sucesso foi removido daqui para deixar o processo mais rápido.
 });
 
@@ -224,7 +232,7 @@ document.getElementById('pagamentoForm').addEventListener('submit', async functi
                 document.getElementById('sucessoSection').style.display = 'block';
                 carrinho = [];
             } else { alert("Erro: " + resultado.error); btn.disabled = false; btn.innerText = "CONCLUIR PALPITES"; }
-        } catch (error) { alert("Erro ao enviar imagem."); btn.disabled = false; btn.innerText = "CONCLUIR PALPITES"; }
+        } catch (error) { alert("Erro ao enviar imagem... Envie Novamente."); btn.disabled = false; btn.innerText = "CONCLUIR PALPITES"; }
     };
     reader.readAsDataURL(file);
 });
@@ -399,4 +407,125 @@ function formatarNome(input) {
     // 3. Devolve o valor limpo para o campo
     input.value = valor;
 }
+
+// NOVA FUNÇÃO PARA CALCULAR ESTATÍSTICAS
+function calcularEstatisticas() {
+    const listaHtml = document.getElementById('listaEstatisticas');
+    listaHtml.innerHTML = "<p class='no-results'>Analisando dados...</p>";
+
+    // 1. Filtra apenas os jogos que já têm resultado preenchido
+    const jogosFinalizados = bancoJogos.filter(j => j.placarRealA !== null && j.placarRealB !== null);
+
+    if (jogosFinalizados.length === 0) {
+        listaHtml.innerHTML = "<p class='no-results'>Nenhum jogo finalizado ainda.</p>";
+        return;
+    }
+
+    // 2. Conta a frequência de cada placar
+    const frequencia = {};
+    jogosFinalizados.forEach(j => {
+        const placar = `${j.placarRealA} x ${j.placarRealB}`;
+        frequencia[placar] = (frequencia[placar] || 0) + 1;
+    });
+
+    // 3. Transforma em array e ordena do mais frequente para o menos frequente
+    const ordenado = Object.entries(frequencia).sort((a, b) => b[1] - a[1]);
+
+    // 4. Renderiza na tela
+    listaHtml.innerHTML = ordenado.map(([placar, qtd]) => `
+        <div class="stat-card">
+            <div class="stat-placar">${placar}</div>
+            <div class="stat-info">
+                <span class="stat-qtd">${qtd} ${qtd === 1 ? 'vez' : 'vezes'}</span>
+                <div class="stat-bar-bg">
+                    <div class="stat-bar-fill" style="width: ${(qtd / jogosFinalizados.length * 100)}%"></div>
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+async function carregarTodosOsPalpitesParaTendencias() {
+    try {
+        const resposta = await fetch(URL_APPS_SCRIPT + "?acao=resultados");
+        const dados = await resposta.json();
+        bancoPalpites = dados.palpites; // Armazena todos os palpites aprovados
+        mostrarTendencias(); // Atualiza a tela
+    } catch (e) { console.error("Erro ao carregar tendências"); }
+}
+
+// NOVA FUNÇÃO PARA MOSTRAR TENDÊNCIAS DO JOGO SELECIONADO
+function mostrarTendencias() {
+    const jogoId = document.getElementById('jogoSelect').value;
+    const area = document.getElementById('tendenciasArea');
+    const lista = document.getElementById('listaTendencias');
+    
+    // Filtra palpites apenas para este jogo
+    const palpitesDesteJogo = bancoPalpites.filter(p => p.jogoId.toString().trim() == jogoId.toString().trim());
+    
+    if (palpitesDesteJogo.length === 0) {
+        area.style.display = 'none';
+        return;
+    }
+
+    area.style.display = 'block';
+
+    // Conta a frequência
+    const contagem = {};
+    palpitesDesteJogo.forEach(p => {
+        const placar = `${p.palpiteA}x${p.palpiteB}`;
+        contagem[placar] = (contagem[placar] || 0) + 1;
+    });
+
+    // Ordena e pega os 3 mais votados
+    const top3 = Object.entries(contagem)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 3);
+
+    lista.innerHTML = top3.map(([placar, qtd]) => `
+        <div class="tendencia-item">
+            <span class="tendencia-placar">${placar}</span>
+            <span class="tendencia-qtd">${qtd} ${qtd === 1 ? 'voto' : 'votos'}</span>
+        </div>
+    `).join('');
+}
+
+function abrirModalPlacares() {
+    const jogoId = document.getElementById('jogoSelect').value;
+    const corpo = document.getElementById('corpoModalPlacares');
+    const modal = document.getElementById('modalPlacares');
+
+    const palpitesDesteJogo = bancoPalpites.filter(p => p.jogoId.toString().trim() == jogoId.toString().trim());
+    
+    const contagem = {};
+    palpitesDesteJogo.forEach(p => {
+        const placar = `${p.palpiteA} x ${p.palpiteB}`;
+        contagem[placar] = (contagem[placar] || 0) + 1;
+    });
+
+    const ordenado = Object.entries(contagem).sort((a, b) => b[1] - a[1]);
+
+    corpo.innerHTML = ordenado.map(([placar, qtd]) => `
+        <div class="stat-card" style="margin-bottom: 8px; padding: 10px;">
+            <span style="color: var(--amarelo-cbf); font-weight: 900; font-size: 18px;">${placar}</span>
+            <span style="color: #fff; font-size: 14px; margin-left: auto;">${qtd} ${qtd === 1 ? 'aposta' : 'apostas'}</span>
+        </div>
+    `).join('');
+
+    modal.style.display = "block";
+}
+
+function fecharModalPlacares() {
+    document.getElementById('modalPlacares').style.display = "none";
+}
+
+// Fechar o modal se clicar fora dele
+window.onclick = function(event) {
+    const modal = document.getElementById('modalPlacares');
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+}
+
 carregarJogosDaPlanilha();
+carregarTodosOsPalpitesParaTendencias();

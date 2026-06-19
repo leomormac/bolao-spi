@@ -6,6 +6,7 @@
     <title>Bolão da Copa 2026</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,700;0,900;1,900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
 <body>
@@ -18,11 +19,14 @@
             <p style="color: var(--amarelo-cbf); font-size: 12px; font-weight: bold;">JOGOS DE HOJE</p>
         </div>
 
+        <!-- Menu de Abas -->
         <div class="tabs">
             <button class="tab-btn active" onclick="mudarAba('apostar')">Fazer Palpite</button>
             <button class="tab-btn" onclick="mudarAba('ganhadores')">Ganhadores</button>
+            <button class="tab-btn" onclick="mudarAba('estatisticas')">Estatísticas</button>
         </div>
 
+        <!-- Aba Apostar -->
         <div id="aba-apostar" class="aba-conteudo active">
             <form id="palpiteForm">
                 <div class="input-group">
@@ -35,34 +39,51 @@
                     <select id="jogoSelect"></select>
                 </div>
 
-                <div class="prize-pool" id="prizePoolContainer">
-                    <p>Prêmio Acumulado</p>
-                    <div class="prize-amount" id="premioAcumulado">R$ 0,00</div>
+                <!-- Prêmio Acumulado com Efeito de Luz -->
+                <div class="match-card-wrapper" style="margin-top: 15px;">
+                    <div class="prize-pool" id="prizePoolContainer" style="margin-bottom: 0;">
+                        <p>Prêmio Acumulado</p>
+                        <div class="prize-amount" id="premioAcumulado">R$ 0,00</div>
+                    </div>
                 </div>
 
                 <div id="horarioJogoDisplay" style="text-align: center; color: #ffdd00; font-size: 14px; font-weight: bold; margin-bottom: 10px;">
                      Carregando horário...
                 </div>
 
+                <!-- Área de Tendências e Botão Mostrar Todos -->
+                <div id="tendenciasArea" style="margin-top: 10px; display: none; margin-bottom: 20px;">
+                    <p style="color: var(--amarelo-cbf); font-size: 12px; font-weight: bold; text-align: center; margin-bottom: 10px;">
+                        <i class="bi bi-fire"></i> TENDÊNCIAS PARA ESTE JOGO
+                    </p>
+                    <div id="listaTendencias" class="tendencias-container">
+                        <!-- Os palpites mais comuns aparecerão aqui -->
+                    </div>
+                    <button type="button" class="btn-ver-todos" onclick="abrirModalPlacares()">
+                        <i class="bi bi-plus-circle"></i> Mostrar Todos
+                    </button>
+                </div>
+
+                <!-- Card de Confronto com Efeito de Luz -->
                 <div class="match-card-wrapper">
-    <div class="match-area">
-        <!-- O conteúdo interno (times, placar, etc) continua o mesmo -->
-        <div class="team">
-            <img id="flagA" src="" alt="Time A">
-            <span id="nameA">Time A</span>
-        </div>
-        <div><input type="number" id="palpiteA" class="score-input" required min="0" value="0"></div>
-        <div class="versus">X</div>
-        <div><input type="number" id="palpiteB" class="score-input" required min="0" value="0"></div>
-        <div class="team">
-            <img id="flagB" src="" alt="Time B">
-            <span id="nameB">Time B</span>
-        </div>
-    </div>
-</div>
+                    <div class="match-area">
+                        <div class="team">
+                            <img id="flagA" src="" alt="Time A">
+                            <span id="nameA">Time A</span>
+                        </div>
+                        <div><input type="number" id="palpiteA" class="score-input" required min="0" value="0"></div>
+                        <div class="versus">X</div>
+                        <div><input type="number" id="palpiteB" class="score-input" required min="0" value="0"></div>
+                        <div class="team">
+                            <img id="flagB" src="" alt="Time B">
+                            <span id="nameB">Time B</span>
+                        </div>
+                    </div>
+                </div>
                 <button type="submit" class="btn-submit" style="background: linear-gradient(180deg, #009c3b 0%, #00732b 100%); color: #fff;">+ Adicionar Palpite (R$ 2,00)</button>
             </form>
 
+            <!-- Carrinho -->
             <div id="carrinhoArea" style="display: none; margin-top: 25px; border-top: 2px dashed rgba(255,255,255,0.2); padding-top: 15px;">
                 <label>Seus Palpites (Carrinho)</label>
                 <div id="listaCarrinho"></div>
@@ -70,11 +91,12 @@
                 <button class="btn-submit" onclick="irParaPagamento()">Ir para Pagamento <i class="bi bi-arrow-right"></i></button>
             </div>
 
+            <!-- Formulário de Pagamento -->
             <form id="pagamentoForm" style="display: none; margin-top: 20px;">
                 <h3 style="color: var(--amarelo-cbf); text-align: center; margin-bottom: 15px;">Finalizar Pagamento</h3>
                 <div class="input-group">
-                  <label>Seu Nome</label>
-                <input type="text" id="nome" required placeholder="DIGITE SEU NOME" oninput="formatarNome(this)" style="text-transform: uppercase;">
+                    <label>Seu Nome</label>
+                    <input type="text" id="nome" required placeholder="DIGITE SEU NOME" oninput="formatarNome(this)" style="text-transform: uppercase;">
                 </div>
                 <div class="input-group">
                     <label>Seu WhatsApp</label>
@@ -92,18 +114,17 @@
                     </div>
                 </div>
                 <div class="input-group">
-    <label>2. Envie o Comprovante (Obrigatório)</label>
-    <div class="upload-container">
-        <label for="comprovante" class="custom-file-upload">
-            <span class="upload-icons">
-                <i class="bi bi-camera-fill"></i> / <i class="bi bi-file-earmark-arrow-up-fill"></i>
-            </span> 
-            <span id="file-name-display">Tirar Foto ou Escolher Arquivo</span>
-        </label>
-        <!-- Removi o 'capture="environment"' para que o celular abra o menu de ESCOLHA em vez de ir direto para a câmera -->
-        <input type="file" id="comprovante" accept="image/*,application/pdf" required onchange="atualizarNomeArquivo(this)">
-    </div>
-</div>
+                    <label>2. Envie o Comprovante (Obrigatório)</label>
+                    <div class="upload-container">
+                        <label for="comprovante" class="custom-file-upload">
+                            <span class="upload-icons">
+                                <i class="bi bi-camera-fill"></i> / <i class="bi bi-file-earmark-arrow-up-fill"></i>
+                            </span> 
+                            <span id="file-name-display">Tirar Foto ou Escolher Arquivo</span>
+                        </label>
+                        <input type="file" id="comprovante" accept="image/*,application/pdf" required onchange="atualizarNomeArquivo(this)">
+                    </div>
+                </div>
                 <button type="submit" class="btn-submit" id="btnSubmitPagamento">CONCLUIR PALPITES</button>
                 <button type="button" class="btn-submit" style="margin-top:10px; background: transparent; box-shadow: none; border: 2px solid #555; color: #a3b8ad;" onclick="voltarParaPalpites()"><i class="bi bi-arrow-left"></i> Voltar Para Palpites</button>
             </form>
@@ -115,6 +136,7 @@
             </div>
         </div>
 
+        <!-- Aba Ganhadores -->
         <div id="aba-ganhadores" class="aba-conteudo">
             <div class="input-group">
                 <label>1. Filtrar por Data</label>
@@ -124,10 +146,29 @@
                 <label>2. Escolher Jogo</label>
                 <select id="filtroResultados" onchange="calcularGanhadores()"></select>
             </div>
-            <!-- ÁREA DO PLACAR REAL -->
             <div id="placarRealArea" style="margin-bottom: 25px;"></div>
-            <!-- LISTA DE GANHADORES -->
             <div id="listaGanhadores"></div>
+        </div>
+
+        <!-- Aba Estatísticas -->
+        <div id="aba-estatisticas" class="aba-conteudo">
+            <h3 style="color: var(--amarelo-cbf); text-align: center; margin-bottom: 20px;">
+                <i class="bi bi-bar-chart-fill"></i> Frequência de Placares
+            </h3>
+            <div id="listaEstatisticas"></div>
+        </div>
+    </div>
+
+    <!-- MODAL DE PLACARES -->
+    <div id="modalPlacares" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="bi bi-list-stars"></i> Todos os Palpites</h3>
+                <span class="close-modal" onclick="fecharModalPlacares()">&times;</span>
+            </div>
+            <div id="corpoModalPlacares" class="modal-body">
+                <!-- Lista completa aparecerá aqui -->
+            </div>
         </div>
     </div>
 
