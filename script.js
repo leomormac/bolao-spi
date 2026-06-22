@@ -1,9 +1,9 @@
-const URL_APPS_SCRIPT = "https://script.google.com/macros/s/AKfycbwvgCQlV0ph01rTgbRwoXuvfZ02AjuVCOiEKiYG3yMUzKRS7RBUSP8BggbyHeaUbF0c/exec";
+const URL_APPS_SCRIPT = "https://script.google.com/macros/s/AKfycbxZnCdjfcPn7OC9S9f20IMu5jjA6EQPYAtlHRUtRqzFxoHSX02wgFweA9IWAUjtNplk/exec";
 
 let bancoJogos = [];
 let bancoPalpites = [];
 let carrinho = [];
-const VALOR_APOSTA = 2.00;
+const VALOR_APOSTA = 5.00;
 
 // Na função mudarAba, adicione o gatilho para carregar as estatísticas:
 function mudarAba(abaId) {
@@ -114,7 +114,7 @@ function atualizarInterface(jogoId) {
         btnSubmit.style.cursor = "not-allowed";
     } else {
         btnSubmit.disabled = false;
-        btnSubmit.innerText = "+ Adicionar Palpite (R$ 2,00)";
+        btnSubmit.innerText = "+ Adicionar Palpite (R$ 5,00)";
         btnSubmit.style.background = "linear-gradient(180deg, #009c3b 0%, #00732b 100%)";
         btnSubmit.style.boxShadow = "0 8px 0 #b39b00, 0 15px 20px rgba(0,0,0,0.4)";
         btnSubmit.style.cursor = "pointer";
